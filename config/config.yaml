@@ -1,0 +1,11 @@
+database:
+  mysql:
+    host: localhost
+    port: 3306
+    username: root
+    password: baicai666666
+    database: admin_api
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
