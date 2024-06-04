@@ -3,31 +3,35 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule,ConfigService } from '@nestjs/config';
-import { createClient } from 'redis';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
-import config from '../config/index';
-
+import { getConfig } from './config';
+import { Menu } from './menu/entities/menu.entity';
+import { Role } from './role/entities/role.entity';
+import { User } from './user/entities/user.entity';
+import { RedisModule } from './redis/redis.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      ignoreEnvFile: false,
       isGlobal: true,
-      load:[config]
+      load:[getConfig]
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: "mysql",
-        host: configService.get<string>('database.mysql.host'),
-        port: configService.get<number>('database.mysql.port'),
-        username: configService.get<string>('database.mysql.username'),
-        password: configService.get<string>('database.mysql.password'),
-        database: configService.get<string>('database.mysql.database'),
-        synchronize: true,
-        logging: true,
-        entities: [],
-        poolSize: 10,
+        host: configService.get<string>('mysql.host'),
+        port: configService.get<number>('mysql.port'),
+        username: configService.get<string>('mysql.username'),
+        password: configService.get<string>('mysql.password'),
+        database: configService.get<string>('mysql.database'),
+        synchronize: configService.get<boolean>('mysql.synchronize'),
+        logging: configService.get<boolean>('mysql.logging'),
+        entities: [User,Role,Menu],
+        poolSize: configService.get<number>('mysql.poolSize'),
         connectorPackage: 'mysql2',
         extra: {
             authPlugin: 'sha256_password',
@@ -36,25 +40,11 @@ import config from '../config/index';
     }),
     UserModule,
     RoleModule,
-    MenuModule
+    MenuModule,
+    RedisModule,
+    AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService,
-    {
-      provide: 'REDIS_CLIENT',
-      async useFactory(configService: ConfigService) {
-        const client = createClient({
-            socket: {
-                host: configService.get<string>('database.redis.host'),
-                port: configService.get<number>('database.redis.port'),
-            },
-            database: configService.get<number>('database.redis.database'),
-        });
-        await client.connect();
-        return client;
-      },
-      inject: [ConfigService]
-    }
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

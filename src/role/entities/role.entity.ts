@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn,CreateDateColumn,UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn,CreateDateColumn,UpdateDateColumn, ManyToMany ,JoinTable} from 'typeorm';
+import { Menu } from '@/menu/entities/menu.entity';
 @Entity({
     name:'roles'
 })
@@ -31,4 +32,9 @@ export class Role {
     createTime: Date;
     @UpdateDateColumn()
     updateTime: Date;
+    @ManyToMany(() => Menu)
+    @JoinTable({
+        name: 'role_menu',
+    })
+    menus: Menu[];
 }

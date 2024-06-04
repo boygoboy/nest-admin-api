@@ -24,13 +24,12 @@ export class User {
     accountStatus: boolean;
     @Column({
         comment:'密码',
-        select:false,
-        length: 20
+        length: 40
     })
     password: string;
     @Column({
         comment:'邮箱',
-        length: 20,
+        length: 50,
         unique:true
     })
     email:string;
