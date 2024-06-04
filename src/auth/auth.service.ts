@@ -22,7 +22,6 @@ export class AuthService {
   private menuRepository: Repository<Menu>;
 
   async haneleLogin(logindata: LoginDto){
-    try{
       const user = await this.userRepository.findOne({
         where: {
             username: logindata.username,
@@ -30,10 +29,10 @@ export class AuthService {
         relations: [ 'roles', 'roles.menus']
     });
     if(!user){
-      throw new HttpException('用户不存在',HttpStatus.BAD_REQUEST)
+      throw new HttpException('用户名或者密码错误',HttpStatus.BAD_REQUEST)
     }
-    if(user.password){
-
+    if(md5(logindata.password)!==user.password){
+      throw new HttpException('用户名或者密码错误',HttpStatus.BAD_REQUEST)
     }
      const bo=new BasicVo()
       const vo=new LoginVo();
@@ -51,9 +50,5 @@ export class AuthService {
         roles: user.roleIds 
       }
      return combineResposeData(bo,HttpStatus.BAD_REQUEST,'登录成功',vo)
-    }catch(error){
-     //程序异常报服务器错误返回给前端
-      throw new HttpException('服务器内部错误',HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
-}
