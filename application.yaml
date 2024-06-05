@@ -5,8 +5,9 @@ server:
   prefix: '/api'
 # JWTModule相关配置
 jwt:
-  secret: ''
-  expireIn: '7d' #表示过期时间7天
+  secret: 'baicai'
+  expireIn: '120m' #表示过期时间7天
+  refreshExpire: '30d' #表示刷新token的过期时间30天
 # sequelize相关
 mysql:
   host: 'localhost'

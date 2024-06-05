@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query,Headers } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 
@@ -9,5 +9,13 @@ export class AuthController {
   @Post('/token')
   async haneleLogin(@Body() data: LoginDto) {
     return await this.authService.haneleLogin(data);
+  }
+  @Get('/refreshtoken')
+  async refreshtoken(@Query('refreshToken') refreshToken:string) {
+     return await this.authService.refreshtoken(refreshToken);
+  }
+  @Get('/logout')
+  async logout( @Query('refreshToken') refreshToken:string,@Headers('Authorization') authorization:string) {
+     return await this.authService.logout(refreshToken,authorization);
   }
 }

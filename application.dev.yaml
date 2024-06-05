@@ -5,8 +5,9 @@ server:
   prefix: '/'
 # JWTModule相关配置
 jwt:
-  secret: ''
-  expireIn: '7d' #表示过期时间7天
+  secret: 'baicai'
+  expireIn: '120m' #表示过期时间7天
+  refreshExpire: '30d' #表示刷新token的过期时间30天
 # sequelize相关
 mysql:
   host: 'localhost'
@@ -23,10 +24,10 @@ mysql:
   poolSize: 20
 redis:
   enable: false #true/false 表示是否启用redis
-  host: 'localhost'
+  host: '127.0.0.1'
   port: 6379
   enableAuth: false
-  db: 0
+  db: 1
 logger:
   level: 'debug'
 swagger:

@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule,ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
@@ -14,15 +15,27 @@ import { RedisModule } from './redis/redis.module';
 import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
+    JwtModule.registerAsync({
+      global: true,
+      useFactory(configService: ConfigService) {
+        return {
+          secret: configService.get('jwt.secret'),
+          signOptions: {
+            expiresIn: configService.get('jwt.expireIn') || '30m'// 默认 30 分钟
+          }
+        }
+      },
+      inject: [ConfigService]
+    }),
     ConfigModule.forRoot({
       ignoreEnvFile: false,
       isGlobal: true,
-      load:[getConfig]
+      load: [getConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: "mysql",
+        type: 'mysql',
         host: configService.get<string>('mysql.host'),
         port: configService.get<number>('mysql.port'),
         username: configService.get<string>('mysql.username'),
@@ -30,19 +43,19 @@ import { AuthModule } from './auth/auth.module';
         database: configService.get<string>('mysql.database'),
         synchronize: configService.get<boolean>('mysql.synchronize'),
         logging: configService.get<boolean>('mysql.logging'),
-        entities: [User,Role,Menu],
+        entities: [User, Role, Menu],
         poolSize: configService.get<number>('mysql.poolSize'),
         connectorPackage: 'mysql2',
         extra: {
-            authPlugin: 'sha256_password',
-        }
-      })
+          authPlugin: 'sha256_password',
+        },
+      }),
     }),
     UserModule,
     RoleModule,
     MenuModule,
     RedisModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
