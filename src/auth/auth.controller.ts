@@ -11,8 +11,8 @@ export class AuthController {
     return await this.authService.haneleLogin(data);
   }
   @Get('/refreshtoken')
-  async refreshtoken(@Query('refreshToken') refreshToken:string) {
-     return await this.authService.refreshtoken(refreshToken);
+  async refreshtoken(@Query('refreshToken') refreshToken:string,@Headers('Authorization') authorization:string) {
+     return await this.authService.refreshtoken(refreshToken,authorization);
   }
   @Get('/logout')
   async logout( @Query('refreshToken') refreshToken:string,@Headers('Authorization') authorization:string) {

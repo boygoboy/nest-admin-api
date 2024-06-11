@@ -16,7 +16,7 @@ mysql:
   password: 'baicai666666'
   database: 'admin_api'
   dialect: 'mysql'
-  synchronize: true
+  synchronize: false
   autoLoadModels: true
   # 打印数据库日志（sequelize）
   logging: true
@@ -27,7 +27,7 @@ redis:
   host: '127.0.0.1'
   port: 6379
   enableAuth: false
-  db: 1
+  db: 0
 logger:
   level: 'debug'
 swagger:
