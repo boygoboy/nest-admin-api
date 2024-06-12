@@ -76,6 +76,7 @@ export class AuthService {
           throw new UnauthorizedException('token 已失效，请重新登录');
         }
         const access_token_sessionid_history=token.slice(-10)
+        debugger
         this.redisService.delToken(`accessToken:${access_token_sessionid_history}`)
         const bo=new BasicVo()
         const vo=new LoginVo();
