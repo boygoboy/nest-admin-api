@@ -1,11 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,HttpException, HttpStatus,Inject  } from '@nestjs/common';
+
+import { InjectRepository } from '@nestjs/typeorm';
+import {  Repository } from 'typeorm';
+import {Menu} from '@/menu/entities/menu.entity';
+import { ConfigService } from '@nestjs/config';
+import {RedisService} from '@/redis/redis.service'
+import { BasicVo } from '@/baseclass/vo';
+import {combineResposeData} from '@/utils'
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 
 @Injectable()
 export class MenuService {
   create(createMenuDto: CreateMenuDto) {
-    return 'This action adds a new menu';
+    console.log(createMenuDto);
+    const bo=new BasicVo()
+    return createMenuDto
+    return combineResposeData(bo,HttpStatus.OK,'创建成功',createMenuDto)
   }
 
   findAll() {

@@ -29,7 +29,7 @@ export class Menu {
     component:string;
     @Column({
         type:'varchar',
-        length:10,
+        length:50,
         comment:'菜单父级ID'
     })
     parentId:string | number;
@@ -63,13 +63,13 @@ export class Menu {
     updateTime:Date;
     @Column({
         type:'varchar',
-        length:50,
-        comment:'菜单图标'
+        length:255,
+        comment:'菜单备注'
     })
     remark:string;
     @Column({
         type:'json',
-        comment:'菜单元数据'
+        comment:'子菜单'
     })
     children:Menu[];
     @Column({
@@ -88,6 +88,6 @@ export class Menu {
         hidden: boolean, 
         isBreadcrumd: boolean,
         linkTo?:string
-        }
+     }
 }
 
