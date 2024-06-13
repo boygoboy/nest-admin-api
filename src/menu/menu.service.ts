@@ -12,11 +12,31 @@ import { UpdateMenuDto } from './dto/update-menu.dto';
 
 @Injectable()
 export class MenuService {
-  create(createMenuDto: CreateMenuDto) {
+  @InjectRepository(Menu)
+  private menuRepository: Repository<Menu>;
+
+  async create(createMenuDto: CreateMenuDto) {
     console.log(createMenuDto);
-    const bo=new BasicVo()
-    return createMenuDto
-    return combineResposeData(bo,HttpStatus.OK,'创建成功',createMenuDto)
+    //添加一条菜单数据
+    const menu=new Menu()
+    menu.parentId=createMenuDto.parentId
+    menu.name=createMenuDto.name
+    menu.code=createMenuDto.code
+    menu.component=createMenuDto.component
+    menu.path=createMenuDto.path
+    menu.redirect=createMenuDto.redirect
+    menu.type=createMenuDto.type
+    menu.sort=createMenuDto.sort
+    menu.remark=createMenuDto.remark
+    menu.isLink=createMenuDto.isLink
+    menu.meta=createMenuDto.meta
+    try{
+    await this.menuRepository.save(menu)
+      const bo=new BasicVo()
+      return combineResposeData(bo,HttpStatus.OK,'创建成功','')
+    }catch(error){
+      throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
   findAll() {

@@ -29,10 +29,11 @@ export class Menu {
     component:string;
     @Column({
         type:'varchar',
+        nullable: true,  // 确保这里设置为 true
         length:50,
         comment:'菜单父级ID'
     })
-    parentId:string | number;
+    parentId:string | number| null;
     @Column({
         type:'varchar',
         length:50,
@@ -42,6 +43,7 @@ export class Menu {
     @Column({
         type:'varchar',
         length:50,
+        nullable: true,  // 确保这里设置为 true
         comment:'菜单重定向'
     })
     redirect:string;
@@ -69,6 +71,7 @@ export class Menu {
     remark:string;
     @Column({
         type:'json',
+        nullable: true,  // 确保这里设置为 true
         comment:'子菜单'
     })
     children:Menu[];
@@ -82,12 +85,12 @@ export class Menu {
         comment:'菜单元信息'
     })
     meta: {
-        title: string,
-        icon: string,
-        cache: boolean, 
-        hidden: boolean, 
-        isBreadcrumd: boolean,
-        linkTo?:string
+        cache: boolean;
+        hidden: boolean;
+        icon: string;
+        isBreadcrumd?: boolean;
+        linkTo?: string;
+        title: string;
      }
 }
 

@@ -1,13 +1,11 @@
 import { IsNotEmpty,MaxLength,IsPositive, IsString,IsEnum,IsBoolean ,IsOptional} from "class-validator";
 enum MenuType {
     Primary = 1,
-    PrimaryStr='1',
     Secondary = 2,
-    SecondaryStr='2'
 }
 
 export class CreateMenuDto {
-    @IsString({message:'父级ID必须为字符串'})
+    @IsOptional()
     parentId: string;
     @IsNotEmpty({message:'菜单名称不能为空'})
     @MaxLength(50,{message:'菜单名称长度不能超过50位'})
@@ -28,7 +26,7 @@ export class CreateMenuDto {
     @IsString({message:'路径必须为字符串'})
     path:string;
     @MaxLength(50,{message:'重定向长度不能超过50位'})
-    @IsString({message:'重定向必须为字符串'})
+    @IsOptional()
     redirect:string;
     @IsNotEmpty({message:'菜单类型不能为空'})
     @IsEnum(MenuType,{message:'菜单类型必须为Primary或Secondary'})
