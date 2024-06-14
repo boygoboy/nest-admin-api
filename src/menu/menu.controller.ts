@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import { RequireLogin } from '@/custom.decorator';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
@@ -14,6 +14,11 @@ export class MenuController {
     return this.menuService.create(createMenuDto);
   }
 
+  @Put()
+  update(@Body() updateMenuDto: UpdateMenuDto) {
+    return this.menuService.update(updateMenuDto);
+  }
+
   @Get()
   findAll() {
     return this.menuService.findAll();
@@ -22,11 +27,6 @@ export class MenuController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.menuService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMenuDto: UpdateMenuDto) {
-    return this.menuService.update(+id, updateMenuDto);
   }
 
   @Delete(':id')

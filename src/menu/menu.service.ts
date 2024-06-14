@@ -39,16 +39,38 @@ export class MenuService {
     }
   }
 
+  async update(updateMenuDto: UpdateMenuDto) {
+     try{
+      const {id}=updateMenuDto
+      const menu=await this.menuRepository.findOneBy({id})
+      if(!menu){
+        throw new HttpException('菜单不存在',HttpStatus.BAD_REQUEST)
+      }
+      menu.parentId=updateMenuDto.parentId
+      menu.name=updateMenuDto.name
+      menu.code=updateMenuDto.code
+      menu.component=updateMenuDto.component
+      menu.path=updateMenuDto.path
+      menu.redirect=updateMenuDto.redirect
+      menu.type=updateMenuDto.type
+      menu.sort=updateMenuDto.sort
+      menu.remark=updateMenuDto.remark
+      menu.isLink=updateMenuDto.isLink
+      menu.meta=updateMenuDto.meta
+      await this.menuRepository.save(menu)
+      const bo=new BasicVo()
+      return combineResposeData(bo,HttpStatus.OK,'更新成功','')
+     }catch(error){
+      throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+     }
+  }
+
   findAll() {
     return `This action returns all menu`;
   }
 
   findOne(id: number) {
     return `This action returns a #${id} menu`;
-  }
-
-  update(id: number, updateMenuDto: UpdateMenuDto) {
-    return `This action updates a #${id} menu`;
   }
 
   remove(id: number) {
