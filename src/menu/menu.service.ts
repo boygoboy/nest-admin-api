@@ -65,15 +65,25 @@ export class MenuService {
      }
   }
 
+async remove(id: number|string) {
+   try{
+      const menu=await this.menuRepository.findOneBy({id:id as number})
+      if(!menu){
+        throw new HttpException('菜单不存在',HttpStatus.BAD_REQUEST)
+      }
+      await this.menuRepository.remove(menu)
+     const bo=new BasicVo()
+     return combineResposeData(bo,HttpStatus.OK,'删除成功','')
+   }catch(error){
+      throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+   }
+}
+
   findAll() {
     return `This action returns all menu`;
   }
 
   findOne(id: number) {
     return `This action returns a #${id} menu`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} menu`;
   }
 }

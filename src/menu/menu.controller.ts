@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete} from '@nestjs/common';
+import {ParseIntPipe} from '@/pipe'
 import { RequireLogin } from '@/custom.decorator';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
@@ -19,6 +20,11 @@ export class MenuController {
     return this.menuService.update(updateMenuDto);
   }
 
+  @Delete(':id')
+  remove(@Param('id',ParseIntPipe) id: number|string) {
+    return this.menuService.remove(id);
+  }
+
   @Get()
   findAll() {
     return this.menuService.findAll();
@@ -27,10 +33,5 @@ export class MenuController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.menuService.findOne(+id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.menuService.remove(+id);
   }
 }
