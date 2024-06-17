@@ -2,7 +2,7 @@ import { Injectable ,HttpException,HttpStatus} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {  In, Repository } from 'typeorm';
 import {PageResponseVo} from '@/role/vo/pageResponseVo.vo';
-import {IResponseData} from '@/utils/types';
+import {IResponseData,IResponsePagerData} from '@/utils/types';
 import {formatResponsePagerData} from '@/utils/index';
 import {
   paginate,
@@ -39,8 +39,7 @@ export class RoleService {
 
   async update( updateRoleDto: UpdateRoleDto) {
      try{
-      const role=new Role()
-      role.id=updateRoleDto.id
+      const role=await this.roleRepository.findOneBy({id:updateRoleDto.id})
       role.roleCode=updateRoleDto.roleCode
       role.roleName=updateRoleDto.roleName
       role.remark=updateRoleDto.remark
@@ -62,8 +61,7 @@ export class RoleService {
           throw new HttpException('有权限项不存在',HttpStatus.BAD_REQUEST)
         }
         //将查询出的menus赋值给role
-        const role=new Role()
-        role.id=id
+        const role=await this.roleRepository.findOneBy({id})
         role.menus=menus
         await this.roleRepository.save(role)
         return '分配权限成功'
@@ -97,7 +95,7 @@ export class RoleService {
         page: page ,
         limit: limit,
       }
-      const roles= await paginate<Role>(this.roleRepository, options, {
+      const roles:IResponsePagerData<PageResponseVo>= await paginate<Role>(this.roleRepository, options, {
         roleName: name
       });
       return  formatResponsePagerData<PageResponseVo>(roles)

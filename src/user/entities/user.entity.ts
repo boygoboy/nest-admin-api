@@ -24,7 +24,7 @@ export class User {
     accountStatus: boolean;
     @Column({
         comment:'密码',
-        length: 40
+        length: 50
     })
     password: string;
     @Column({
@@ -48,11 +48,6 @@ export class User {
     createTime: Date;
     @UpdateDateColumn()
     updateTime: Date;
-    @Column({
-        comment:'角色id',
-        type:'simple-array'
-    })
-    roleIds: number[];
     @ManyToMany(() => Role)
     @JoinTable({
         name: 'user_roles'

@@ -63,6 +63,9 @@ export class MenuService {
       await this.menuRepository.save(menu)
       return '更新成功'
      }catch(error){
+      if(error instanceof HttpException){
+        throw error
+      }
       throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
      }
   }
