@@ -7,9 +7,8 @@ import {User} from '@/user/entities/user.entity';
 import {Role} from '@/role/entities/role.entity';
 import {Menu} from '@/menu/entities/menu.entity';
 import { LoginDto } from './dto/login.dto';
-import { BasicVo } from '@/baseclass/vo';
 import {LoginVo} from './vo/login.vo';
-import {md5,combineResposeData} from '@/utils'
+import {md5} from '@/utils'
 import { ConfigService } from '@nestjs/config';
 import {RedisService} from '@/redis/redis.service'
 
@@ -48,7 +47,6 @@ export class AuthService {
       throw new HttpException('用户名或者密码错误',HttpStatus.BAD_REQUEST)
     }
 
-     const bo=new BasicVo()
       const vo=new LoginVo();
       vo.access_token = this.jwtService.sign({...user}, {
         expiresIn: this.configService.get('jwt.expireIn') || '30m'
@@ -60,7 +58,7 @@ export class AuthService {
       const refresh_token_sessionid=vo.refresh_token.slice(-10)
       this.redisService.setToken(`refreshToken:${refresh_token_sessionid}`,vo.refresh_token)
       this.redisService.setToken(`accessToken:${access_token_sessionid}`,vo.access_token)
-     return combineResposeData(bo,HttpStatus.OK,'登录成功',vo)
+     return vo
     }
 
     async refreshtoken(refreshToken:string, authorization:string){
@@ -87,14 +85,13 @@ export class AuthService {
               // 在这里处理过期的token
               const access_token_sessionid_history=token.slice(-10)
               this.redisService.delToken(`accessToken:${access_token_sessionid_history}`)
-              const bo=new BasicVo()
               const vo=new LoginVo();
               vo.access_token = this.jwtService.sign({...user}, {
                 expiresIn: this.configService.get('jwt.expireIn') || '30m'
               });
               const access_token_sessionid=vo.access_token.slice(-10)
               this.redisService.setToken(`accessToken:${access_token_sessionid}`,vo.access_token)
-              return combineResposeData(bo,HttpStatus.OK,'token刷新成功',vo)
+              return vo
               // 还可以继续执行需要的业务逻辑
           } else {
               // 如果抛出的不是TokenExpiredError，那么token可能在其他方面无效
@@ -129,8 +126,7 @@ export class AuthService {
        const refresh_token_sessionid=refreshToken.slice(-10)
        this.redisService.delToken(`accessToken:${access_token_sessionid}`)
        this.redisService.delToken(`refreshToken:${refresh_token_sessionid}`)
-       const bo=new BasicVo()
-       return combineResposeData(bo,HttpStatus.OK,'退出登录成功','')
+       return '退出成功'
       }catch(error){
         throw new UnauthorizedException('token 已失效，请重新登录');
       }

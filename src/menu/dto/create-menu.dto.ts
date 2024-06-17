@@ -6,8 +6,10 @@ enum MenuType {
 
 export class CreateMenuDto {
     @IsOptional()
-    parentId: string;
-    @IsNotEmpty({message:'菜单名称不能为空'})
+    id?: number;
+    @IsOptional()
+    parentId: string|number|null;
+    @IsOptional()
     @MaxLength(50,{message:'菜单名称长度不能超过50位'})
     @IsString({message:'菜单名称必须为字符串'})
     name:string;
@@ -16,12 +18,12 @@ export class CreateMenuDto {
     @IsString({message:'权限标识必须为字符串'})
     @IsOptional()
     code:string;
-    @IsNotEmpty({message:'组件名称不能为空'})
+    @IsOptional()
     @MaxLength(50,{message:'组件名称长度不能超过50位'})
     @IsString({message:'组件名称必须为字符串'})
     @IsOptional()
     component:string;
-    @IsNotEmpty({message:'路径不能为空'})
+    @IsOptional()
     @MaxLength(50,{message:'路径长度不能超过50位'})
     @IsString({message:'路径必须为字符串'})
     path:string;

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn,UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn,UpdateDateColumn,Tree, TreeChildren, TreeParent} from 'typeorm';
 enum MenuType {
     Primary = 1,
     Secondary = 2
@@ -6,6 +6,7 @@ enum MenuType {
 @Entity({
     name:'menus'
 })
+@Tree('closure-table')
 export class Menu {
     @PrimaryGeneratedColumn()
     id: number;
@@ -18,19 +19,20 @@ export class Menu {
     @Column({
         type:'varchar',
         length:50,
+        nullable: true,  // 确保这里设置为 true
         comment:'菜单名称'
     })
     name:string;
     @Column({
         type:'varchar',
         length:50,
+        nullable: true,  // 确保这里设置为 true
         comment:'菜单组件'
     })
     component:string;
     @Column({
         type:'varchar',
         nullable: true,  // 确保这里设置为 true
-        length:50,
         comment:'菜单父级ID'
     })
     parentId:string | number| null;
@@ -69,12 +71,10 @@ export class Menu {
         comment:'菜单备注'
     })
     remark:string;
-    @Column({
-        type:'json',
-        nullable: true,  // 确保这里设置为 true
-        comment:'子菜单'
-    })
+    @TreeChildren({ cascade: ['remove'] })
     children:Menu[];
+    @TreeParent({onDelete: 'CASCADE'})
+    parent: Menu;
     @Column({
         type:'boolean',
         comment:'是否是外链'

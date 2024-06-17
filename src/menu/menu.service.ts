@@ -1,19 +1,17 @@
 import { Injectable,HttpException, HttpStatus,Inject  } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import {  Repository } from 'typeorm';
+import {  Repository,TreeRepository, Like } from 'typeorm';
 import {Menu} from '@/menu/entities/menu.entity';
 import { ConfigService } from '@nestjs/config';
 import {RedisService} from '@/redis/redis.service'
-import { BasicVo } from '@/baseclass/vo';
-import {combineResposeData} from '@/utils'
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 
 @Injectable()
 export class MenuService {
   @InjectRepository(Menu)
-  private menuRepository: Repository<Menu>;
+  private menuRepository: TreeRepository<Menu>  // 指定为 TreeRepository
 
   async create(createMenuDto: CreateMenuDto) {
     console.log(createMenuDto);
@@ -30,10 +28,15 @@ export class MenuService {
     menu.remark=createMenuDto.remark
     menu.isLink=createMenuDto.isLink
     menu.meta=createMenuDto.meta
+    if(createMenuDto.parentId!=null){
+      const parentMenu=await this.menuRepository.findOneBy({id:createMenuDto.parentId as number})
+      if(parentMenu){
+        menu.parent=parentMenu
+      }
+    }
     try{
     await this.menuRepository.save(menu)
-      const bo=new BasicVo()
-      return combineResposeData(bo,HttpStatus.OK,'创建成功','')
+      return '创建成功'
     }catch(error){
       throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
     }
@@ -58,8 +61,7 @@ export class MenuService {
       menu.isLink=updateMenuDto.isLink
       menu.meta=updateMenuDto.meta
       await this.menuRepository.save(menu)
-      const bo=new BasicVo()
-      return combineResposeData(bo,HttpStatus.OK,'更新成功','')
+      return '更新成功'
      }catch(error){
       throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
      }
@@ -72,18 +74,46 @@ async remove(id: number|string) {
         throw new HttpException('菜单不存在',HttpStatus.BAD_REQUEST)
       }
       await this.menuRepository.remove(menu)
-     const bo=new BasicVo()
-     return combineResposeData(bo,HttpStatus.OK,'删除成功','')
+     return '删除成功'
    }catch(error){
       throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
    }
 }
 
-  findAll() {
-    return `This action returns all menu`;
-  }
+  async findMany(keyword:string){
+   try{
+    const sortMenuTree=(menu: Menu): Menu =>{
+      // 如果有子菜单，先对子菜单进行排序
+      if (menu.children && menu.children.length > 0) {
+        menu.children = menu.children.map(child => sortMenuTree(child)).sort((a, b) => a.sort - b.sort);
+      }
+      return menu;
+    }
+     if(!keyword){
+      // 如果没有关键字，返回所有菜单
+      const allMenus = await this.menuRepository.findTrees();
+     const trees = allMenus.map(menu => sortMenuTree(menu));
+      // 对顶级菜单进行排序
+      trees.sort((a, b) => a.sort - b.sort);
+      return trees
+     }
+    // 使用 queryBuilder 查找所有meta.title模糊匹配的菜单
+    const matchedMenus = await this.menuRepository.createQueryBuilder("menu")
+      .where(`menu.meta->>'$.title' LIKE :title`, { title: `%${keyword}%` })
+      .getMany();
 
-  findOne(id: number) {
-    return `This action returns a #${id} menu`;
+        // 为每个找到的菜单加载其子菜单树，并应用排序
+        const unsortedTrees = await Promise.all(
+          matchedMenus.map(async menu => {
+            const tree = await this.menuRepository.findDescendantsTree(menu);
+            return sortMenuTree(tree); // 对树进行排序
+          })
+        );
+        // 对顶级菜单进行排序
+      const  trees = unsortedTrees.sort((a, b) => a.sort - b.sort);
+    return trees
+   }catch(error){
+      throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+   }
   }
 }

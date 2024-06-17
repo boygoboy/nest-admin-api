@@ -7,25 +7,30 @@ export class Role {
     @PrimaryGeneratedColumn()
     id: number;
     @Column({
+        type: 'varchar',
         comment: '角色编码',
         length: 20,
         unique: true
     })
     roleCode: string;
     @Column({
+        type: 'varchar',
         comment: '角色名称',
         length: 20,
         unique: true
     })
     roleName: string;
     @Column({
+        type: 'boolean',
         comment: '角色状态',
         default: false
     })
     status:boolean;
     @Column({
+        type: 'varchar',
         comment: '备注',
-        length: 255
+        length: 255,
+        nullable: true
     })
     remark: string;
     @CreateDateColumn()

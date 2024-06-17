@@ -4,6 +4,9 @@ import {  BadRequestException,
   ValidationPipe} from '@nestjs/common';
 import { AppModule } from './app.module';
 import {getConfig} from './config';
+import {FormatResponseInterceptor} from '@/interceptor/format-response.interceptor';
+import {InvokeRecordInterceptor} from '@/interceptor/invoke-record.interceptor';
+import {CustomExceptionFilter} from '@/filter/custom-exception.filter';
 const config=getConfig();
 
 async function bootstrap() {
@@ -29,6 +32,9 @@ async function bootstrap() {
       },
     }),
   );
+  app.useGlobalInterceptors(new FormatResponseInterceptor());
+  app.useGlobalInterceptors(new InvokeRecordInterceptor());
+  app.useGlobalFilters(new CustomExceptionFilter());
 
   await app.listen(config?.server?.port??3000);
 }

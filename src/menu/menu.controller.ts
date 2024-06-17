@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete} from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query} from '@nestjs/common';
 import {ParseIntPipe} from '@/pipe'
 import { RequireLogin } from '@/custom.decorator';
 import { MenuService } from './menu.service';
@@ -25,13 +25,8 @@ export class MenuController {
     return this.menuService.remove(id);
   }
 
-  @Get()
-  findAll() {
-    return this.menuService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.menuService.findOne(+id);
+  @Get('/search')
+  findMany(@Query('keyword') keyword?: string) {
+    return this.menuService.findMany(keyword);
   }
 }
