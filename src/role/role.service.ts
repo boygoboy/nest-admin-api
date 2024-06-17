@@ -1,12 +1,14 @@
 import { Injectable ,HttpException,HttpStatus} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {  In, Repository } from 'typeorm';
+import {PageResponseVo} from '@/role/vo/pageResponseVo.vo';
+import {IResponseData} from '@/utils/types';
+import {formatResponsePagerData} from '@/utils/index';
 import {
   paginate,
-  Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
-import { Role } from '@/role/entities/role.entity';
+import {Role} from '@/role/entities/role.entity';
 import { Menu } from '@/menu/entities/menu.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -15,11 +17,12 @@ import { QueryDto } from './dto/query-dto';
 
 @Injectable()
 export class RoleService {
-  @InjectRepository(Role)
-  private roleRepository: Repository<Role>;
-  
   @InjectRepository(Menu)
   private menuRepository: Repository<Menu>;
+
+  @InjectRepository(Role)
+  private roleRepository: Repository<Role>;
+
  async create(createRoleDto: CreateRoleDto) {
   try{
     const role = new Role();
@@ -87,19 +90,36 @@ export class RoleService {
     }
   }
 
-  async findMany(query:QueryDto) :Promise<Pagination<Role>>{
+  async findMany(query:QueryDto) :Promise<IResponseData<PageResponseVo>>{
     try{
      const {current:page,size:limit,name}=query
       const options: IPaginationOptions = {
         page: page ,
         limit: limit,
       }
-
       const roles= await paginate<Role>(this.roleRepository, options, {
         roleName: name
       });
-      return roles
+      return  formatResponsePagerData<PageResponseVo>(roles)
     }catch(error){
+      throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
+
+  async findOnePermission(id:number):Promise<number[]>{
+    try{
+      const role = await this.roleRepository.findOne({
+        where: { id },
+        relations: ['menus'],
+    });
+    if(!role){
+      throw new HttpException('角色不存在',HttpStatus.BAD_REQUEST)
+    }
+      return role.menus.map(menu=>menu.id)
+    }catch(error){
+      if(error instanceof HttpException){
+        throw error
+      }
       throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
