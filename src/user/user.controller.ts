@@ -1,9 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,Put} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete,Put,Query} from '@nestjs/common';
+import {ParseIntPipe} from '@/pipe'
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import { PasswordDto } from './dto/password.dto';
+import { RequireLogin } from '@/custom.decorator';
+import { StatusDto } from './dto/status.dto';
+import { QueryDto } from './dto/query.dto';
+import {UserInfo} from '@/custom.decorator';
 @Controller('/system/user')
+@RequireLogin()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -17,9 +23,24 @@ export class UserController {
     return this.userService.update(updateUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Put('/password')
+  updatePassword(@Body() passwordDto: PasswordDto) {
+    return this.userService.updatePassword(passwordDto);
+  }
+
+  @Put('/status')
+  updateStatus(@UserInfo('id') id:number, @Body() statusDto: StatusDto) {
+    return this.userService.updateStatus(id,statusDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id',ParseIntPipe ) id: number) {
+    return this.userService.remove(id);
+  }
+
+  @Get('/search')
+  findMany(@Query() query:QueryDto) {
+    return this.userService.findMany(query);
   }
 
   @Get(':id')
@@ -27,9 +48,4 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
 }

@@ -12,9 +12,9 @@ export class CreateUserDto {
     @IsNotEmpty({message:'账号状态不能为空'})
     @IsBoolean({message:'账号状态必须是布尔值'})
     accountStatus:boolean=false;
-    @IsNotEmpty({message:'密码不能为空'})
+    @IsOptional()
     @MaxLength(50,{message:'密码最大长度为50'})
-    password:string;
+    password?:string;
     @IsNotEmpty({message:'邮箱不能为空'})
     @MaxLength(50,{message:'邮箱最大长度为50'})
     @IsEmail()

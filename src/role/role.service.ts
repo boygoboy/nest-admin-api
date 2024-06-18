@@ -1,7 +1,7 @@
 import { Injectable ,HttpException,HttpStatus} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {  In, Repository } from 'typeorm';
-import {PageResponseVo} from '@/role/vo/pageResponseVo.vo';
+import {PageResponseVo} from '@/role/vo/page-response.vo';
 import {IResponseData,IResponsePagerData} from '@/utils/types';
 import {formatResponsePagerData} from '@/utils/index';
 import {

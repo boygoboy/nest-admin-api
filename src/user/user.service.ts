@@ -1,12 +1,22 @@
 import { Injectable ,HttpException,HttpStatus} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {  In, Repository } from 'typeorm';
+import {  In, Repository,Like } from 'typeorm';
 import {User} from '@/user/entities/user.entity';
 import {Role} from '@/role/entities/role.entity';
 import {Menu} from '@/menu/entities/menu.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import {PasswordDto} from './dto/password.dto';
+import { StatusDto } from './dto/status.dto';
+import { QueryDto } from './dto/query.dto';
+import {PageResponseVo} from './vo/page-response.vo';
 import { md5 } from '@/utils';
+import {
+  paginate,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
+import {IResponseData,IResponsePagerData} from '@/utils/types';
+import {formatResponsePagerData} from '@/utils/index';
 
 @Injectable()
 export class UserService {
@@ -67,17 +77,89 @@ async update(updateUserDto: UpdateUserDto) {
     }
 }
 
+async updatePassword(passwordDto: PasswordDto){
+      try{
+      const {userId,newPassword,repPassword}=passwordDto
+      const user=await this.userRepository.findOneBy({id:userId})
+      if(!user){
+        throw new HttpException('用户不存在',HttpStatus.BAD_REQUEST)
+      }
+      if(newPassword!==repPassword){
+        throw new HttpException('两次密码不一致',HttpStatus.BAD_REQUEST)
+      }
+      user.password=md5(newPassword)
+      await this.userRepository.save(user)
+      return '重置密码成功'
+      }catch(error){
+        if(error instanceof HttpException){
+          throw error
+        }
+        throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+      }
+}
 
-  findAll() {
-    return `This action returns all user`;
+async updateStatus(id:number, statusDto:StatusDto){
+    try{
+      const {userId,accountStatus}=statusDto
+      const user=await this.userRepository.findOneBy({id:userId})
+      if(!user){
+        throw new HttpException('用户不存在',HttpStatus.BAD_REQUEST)
+      }
+      if(userId===id){
+        throw new HttpException('不能禁用自己',HttpStatus.BAD_REQUEST)
+      }
+      user.accountStatus=accountStatus
+      await this.userRepository.save(user)
+      return '更新状态成功'
+    }catch(error){
+      if(error instanceof HttpException){
+        throw error
+      }
+      throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+}
+
+async remove(id: number) {
+  try{
+    const user=await this.userRepository.findOneBy({id:id})
+    if(!user){
+      throw new HttpException('用户不存在',HttpStatus.BAD_REQUEST)
+    }
+    await this.userRepository.remove(user)
+    return '删除用户成功'
+  }catch(error){
+    throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
   }
+}
+
+async findMany(query:QueryDto) :Promise<IResponseData<PageResponseVo>>{
+  try{
+   const {current:page,size:limit,keyword}=query
+    const options: IPaginationOptions = {
+      page: page,
+      limit: limit,
+    }
+    const searchOptions = {
+      where: [
+        { username: Like(`%${keyword}%`) },
+        { email: Like(`%${keyword}%`) },
+        { mobile: Like(`%${keyword}%`) },
+      ],
+      relations: ['roles']  // 在这里添加角色关系
+    };
+    const users:IResponsePagerData<PageResponseVo>= await paginate<User>(this.userRepository, options, searchOptions);
+    users.items.forEach(user=>{
+      user.roleIds= user.roles.map(role=>role.id)
+      delete user.roles
+    })
+    return  formatResponsePagerData<PageResponseVo>(users)
+  }catch(error){
+    throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
 
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }
 
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
 }
