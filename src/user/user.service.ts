@@ -148,9 +148,10 @@ async findMany(query:QueryDto) :Promise<IResponseData<PageResponseVo>>{
       relations: ['roles']  // 在这里添加角色关系
     };
     const users:IResponsePagerData<PageResponseVo>= await paginate<User>(this.userRepository, options, searchOptions);
-    users.items.forEach(user=>{
+    users.items.forEach((user:PageResponseVo)=>{
       user.roleIds= user.roles.map(role=>role.id)
       delete user.roles
+      delete user.password
     })
     return  formatResponsePagerData<PageResponseVo>(users)
   }catch(error){

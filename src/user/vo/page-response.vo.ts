@@ -5,6 +5,7 @@ export class PageResponseVo {
     accountStatus:boolean;
     roleIds?:number[];
     roles?:any[];
+    password?:string;
     email:string;
     mobile:string;
     remark:string;
