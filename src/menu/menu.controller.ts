@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query} from '@nestjs/common';
 import {ParseIntPipe} from '@/pipe'
-import { RequireLogin } from '@/custom.decorator';
+import { RequireLogin,UserInfo } from '@/custom.decorator';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
@@ -28,5 +28,15 @@ export class MenuController {
   @Get('/search')
   findMany(@Query('keyword') keyword?: string) {
     return this.menuService.findMany(keyword);
+  }
+
+  @Get('/select')
+  findAll(){
+
+  }
+
+  @Get('/user')
+  findUserMenu(@UserInfo('id') id: number) {
+    return this.menuService.findUserMenu(id);
   }
 }

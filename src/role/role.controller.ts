@@ -40,4 +40,9 @@ export class RoleController {
   findOnePermission(@Param('id',ParseIntPipe) id:number){
     return this.roleService.findOnePermission(id)
   }
+
+  @Get('/list')
+  findAll(){
+    return this.roleService.findAll()
+  }
 }

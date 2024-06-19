@@ -13,3 +13,9 @@ export interface IResponsePagerData<T=any> {
     meta:IPaginationMeta;
     links?:IPaginationLinks;
 }
+
+export  interface HasParentId {
+    parentId: number | null;
+    id:number;
+    children?:any[]
+  }

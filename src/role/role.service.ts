@@ -104,6 +104,15 @@ export class RoleService {
     }
   }
 
+  async findAll(){
+    try{
+      const roles=await this.roleRepository.find()
+      return roles
+    }catch(error){
+      throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
+
   async findOnePermission(id:number):Promise<number[]>{
     try{
       const role = await this.roleRepository.findOne({

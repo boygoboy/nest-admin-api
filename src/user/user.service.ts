@@ -159,6 +159,42 @@ async findMany(query:QueryDto) :Promise<IResponseData<PageResponseVo>>{
   }
 }
 
+async findAll(){
+  try{
+    const users:PageResponseVo[]=await this.userRepository.find()
+    users.forEach(item=>delete item.password)
+    return users
+  }catch(error){
+    throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
+
+async exist(mobile?:string,email?:string,username?:string){
+  try{
+    const params=[mobile,email,username].filter(x=>x!==undefined)
+    if(params.length!==1){
+      throw new HttpException('传参错误',HttpStatus.BAD_REQUEST)
+    }
+    if(mobile){
+      const user=await this.userRepository.findOneBy({mobile:mobile})
+      return user?false:true
+    }
+    if(email){
+      const user=await this.userRepository.findOneBy({email:email})
+      return user?false:true
+    }
+    if(username){
+      const user=await this.userRepository.findOneBy({username:username})
+      return user?false:true
+    }
+  }catch(error){
+    if(error instanceof HttpException){
+      throw error
+    }
+    throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+  }
+}
+
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }

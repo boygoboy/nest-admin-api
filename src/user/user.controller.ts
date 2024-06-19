@@ -43,6 +43,16 @@ export class UserController {
     return this.userService.findMany(query);
   }
 
+  @Get('/list')
+  findAll(){
+    return this.userService.findAll()
+  }
+
+  @Get('/exist')
+  exist(@Query('mobile') mobile?:string,@Query('email') email?:string,@Query('username') username?:string){
+    return this.userService.exist(mobile,email,username);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);

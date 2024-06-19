@@ -38,7 +38,7 @@ export class AuthService {
         where: {
             username: logindata.username,
         },
-        relations: [ 'roles', 'roles.menus']
+        relations: [ 'roles']
     });
     if(!user){
       throw new HttpException('用户名或者密码错误',HttpStatus.BAD_REQUEST)

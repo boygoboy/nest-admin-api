@@ -35,7 +35,7 @@ export class Menu {
         nullable: true,  // 确保这里设置为 true
         comment:'菜单父级ID'
     })
-    parentId:string | number| null;
+    parentId: number| null;
     @Column({
         type:'varchar',
         length:50,

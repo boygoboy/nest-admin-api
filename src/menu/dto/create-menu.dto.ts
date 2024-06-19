@@ -8,7 +8,7 @@ export class CreateMenuDto {
     @IsOptional()
     id?: number;
     @IsOptional()
-    parentId: string|number|null;
+    parentId: number|null;
     @IsOptional()
     @MaxLength(50,{message:'菜单名称长度不能超过50位'})
     @IsString({message:'菜单名称必须为字符串'})
