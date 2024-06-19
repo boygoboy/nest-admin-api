@@ -134,7 +134,7 @@ async remove(id: number) {
 
 async findMany(query:QueryDto) :Promise<IResponseData<PageResponseVo>>{
   try{
-   const {current:page,size:limit,keyword}=query
+   const {current:page,size:limit,keyword=''}=query
     const options: IPaginationOptions = {
       page: page,
       limit: limit,

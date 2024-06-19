@@ -107,15 +107,6 @@ async remove(id: number|string) {
      const trees = allMenus.map(menu => sortMenuTree(menu));
       // 对顶级菜单进行排序
       trees.sort((a, b) => a.sort - b.sort);
-      const hadleTree=(trees:Menu[])=>{
-        trees.forEach(tree=>{
-          if(tree.children){
-            hadleTree(tree.children)
-          }
-          (tree as any).title=tree.meta.title
-        })
-      }
-      hadleTree(trees)
       return trees
      }
     // 使用 queryBuilder 查找所有meta.title模糊匹配的菜单
@@ -136,6 +127,34 @@ async remove(id: number|string) {
    }catch(error){
       throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
    }
+  }
+
+  async findAll(){
+      try{
+        const sortMenuTree=(menu: Menu): Menu =>{
+          // 如果有子菜单，先对子菜单进行排序
+          if (menu.children && menu.children.length > 0) {
+            menu.children = menu.children.map(child => sortMenuTree(child)).sort((a, b) => a.sort - b.sort);
+          }
+          return menu;
+        }
+      const allMenus = await this.menuRepository.findTrees();
+      const trees = allMenus.map(menu => sortMenuTree(menu));
+      // 对顶级菜单进行排序
+      trees.sort((a, b) => a.sort - b.sort);
+      const hadleTree=(trees:Menu[])=>{
+        trees.forEach(tree=>{
+          if(tree.children){
+            hadleTree(tree.children)
+          }
+          (tree as any).title=tree.meta.title
+        })
+      }
+      hadleTree(trees)
+      return trees
+      }catch(error){
+      throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)
+      }
   }
 
   async findUserMenu(id:number){

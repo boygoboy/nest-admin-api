@@ -32,7 +32,7 @@ export class MenuController {
 
   @Get('/select')
   findAll(){
-
+    return this.menuService.findAll();
   }
 
   @Get('/user')
