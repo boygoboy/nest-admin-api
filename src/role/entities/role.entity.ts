@@ -10,14 +10,12 @@ export class Role {
         type: 'varchar',
         comment: '角色编码',
         length: 20,
-        unique: true
     })
     roleCode: string;
     @Column({
         type: 'varchar',
         comment: '角色名称',
         length: 20,
-        unique: true
     })
     roleName: string;
     @Column({

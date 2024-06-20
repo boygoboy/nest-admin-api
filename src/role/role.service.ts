@@ -1,6 +1,6 @@
 import { Injectable ,HttpException,HttpStatus} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {  In, Repository } from 'typeorm';
+import {  In, Repository,Like } from 'typeorm';
 import {PageResponseVo} from '@/role/vo/page-response.vo';
 import {IResponseData,IResponsePagerData} from '@/utils/types';
 import {formatResponsePagerData} from '@/utils/index';
@@ -95,9 +95,12 @@ export class RoleService {
         page: page ,
         limit: limit,
       }
-      const roles:IResponsePagerData<PageResponseVo>= await paginate<Role>(this.roleRepository, options, {
-        roleName: name
-      });
+      const searchOptions = {
+        where: [
+          { roleName: Like(`%${name}%`) },
+        ],
+      };
+      const roles:IResponsePagerData<PageResponseVo>= await paginate<Role>(this.roleRepository, options, searchOptions);
       return  formatResponsePagerData<PageResponseVo>(roles)
     }catch(error){
       throw new HttpException(error,HttpStatus.INTERNAL_SERVER_ERROR)

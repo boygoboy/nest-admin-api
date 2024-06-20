@@ -169,7 +169,7 @@ async remove(id: number|string) {
         throw new HttpException('用户不存在',HttpStatus.BAD_REQUEST)
       }
       //筛选出所有菜单id并去重
-      const menus = user.roles.map(role => role.menus).flat();
+      const menus = user.roles.map(role => role.status!=false&&role.menus).flat();
       const uniqueMenus = Array.from(new Set(menus.map(menu => menu.id)))
           .map(id => {
               return menus.find(menu => menu.id === id);
