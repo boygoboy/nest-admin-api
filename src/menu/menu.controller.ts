@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query} from '@nestjs/common';
-import {ParseIntPipe} from '@/pipe'
-import { RequireLogin,UserInfo } from '@/custom.decorator';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
+import { ParseIntPipe } from '@/pipe'
+import { RequireLogin, UserInfo } from '@/custom.decorator';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
@@ -8,7 +8,7 @@ import { UpdateMenuDto } from './dto/update-menu.dto';
 @Controller('/system/menu')
 @RequireLogin()
 export class MenuController {
-  constructor(private readonly menuService: MenuService) {}
+  constructor(private readonly menuService: MenuService) { }
 
   @Post()
   create(@Body() createMenuDto: CreateMenuDto) {
@@ -21,7 +21,7 @@ export class MenuController {
   }
 
   @Delete(':id')
-  remove(@Param('id',ParseIntPipe) id: number|string) {
+  remove(@Param('id', ParseIntPipe) id: number | string) {
     return this.menuService.remove(id);
   }
 
@@ -31,7 +31,7 @@ export class MenuController {
   }
 
   @Get('/select')
-  findAll(){
+  findAll() {
     return this.menuService.findAll();
   }
 
