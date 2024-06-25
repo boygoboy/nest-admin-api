@@ -19,11 +19,15 @@ export class PermissionGuard implements CanActivate {
 
     const permissions = request.user.permissions;
 
+    if (!permissions) {
+      return true;
+    }
+
     const requiredPermissions = this.reflector.getAllAndOverride<string[]>('require-permission', [
       context.getClass(),
       context.getHandler()
     ])
-
+  
     if (!requiredPermissions) {
       return true;
     }

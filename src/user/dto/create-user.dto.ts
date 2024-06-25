@@ -25,7 +25,7 @@ export class CreateUserDto {
     mobile: string;
     @IsOptional()
     @MaxLength(255, { message: '备注最大长度为255' })
-    remark: string;
+    remark?: string;
     @ArrayNotEmpty()
     roleIds: number[];
 }

@@ -40,8 +40,10 @@ export class User {
     })
     mobile: string;
     @Column({
+        type: 'varchar',
         comment: '备注',
-        length: 255
+        length: 255,
+        nullable: true
     })
     remark: string;
     @CreateDateColumn()
