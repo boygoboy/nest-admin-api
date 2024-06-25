@@ -53,6 +53,9 @@ export class AuthService {
 
     const permissions = [...new Set(user.roles.map(role => role.menus).flat())].filter(menu => menu.type === 2).map(menu => menu.code) as string[]
     (user as AuthUser).permissions = permissions
+    user.roles.forEach(role=>{
+      delete role.menus
+    })
     const vo = new LoginVo();
     vo.access_token = this.jwtService.sign({ ...user }, {
       expiresIn: this.configService.get('jwt.expireIn') || '30m'

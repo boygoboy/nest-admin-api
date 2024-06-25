@@ -6,7 +6,7 @@ server:
 # JWTModule相关配置
 jwt:
   secret: 'baicai'
-  expireIn: '120m' #表示过期时间7天
+  expireIn: '1m' #表示过期时间7天
   refreshExpire: '30d' #表示刷新token的过期时间30天
 # sequelize相关
 mysql:
@@ -14,7 +14,7 @@ mysql:
   port: 3306
   username: 'root'
   password: 'baicai666666'
-  database: 'test'
+  database: 'admin_api'
   dialect: 'mysql'
   synchronize: false
   autoLoadModels: true
