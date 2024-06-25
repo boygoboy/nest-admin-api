@@ -1,46 +1,46 @@
-import {CreateDateColumn,UpdateDateColumn,Column,PrimaryGeneratedColumn,Entity, ManyToMany,JoinTable} from 'typeorm'
-import {Role} from '@/role/entities/role.entity'
+import { CreateDateColumn, UpdateDateColumn, Column, PrimaryGeneratedColumn, Entity, ManyToMany, JoinTable } from 'typeorm'
+import { Role } from '../../role/entities/role.entity'
 @Entity({
-    name:'users'
+    name: 'users'
 })
 export class User {
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number;
     @Column({
-        comment:'用户名',
+        comment: '用户名',
         length: 20,
-        unique:true
+        unique: true
     })
     username: string;
     @Column({
-        comment:'昵称',
+        comment: '昵称',
         length: 20,
     })
-    nickName:string; 
+    nickName: string;
     @Column({
-        default:false,
-        comment:'账好状态'
+        default: false,
+        comment: '账好状态'
     })
     accountStatus: boolean;
     @Column({
-        comment:'密码',
+        comment: '密码',
         length: 50
     })
     password: string;
     @Column({
-        comment:'邮箱',
+        comment: '邮箱',
         length: 50,
-        unique:true
+        unique: true
     })
-    email:string;
+    email: string;
     @Column({
-        comment:'手机号',
+        comment: '手机号',
         length: 20,
-        unique:true
+        unique: true
     })
-    mobile:string;
+    mobile: string;
     @Column({
-        comment:'备注',
+        comment: '备注',
         length: 255
     })
     remark: string;
@@ -52,5 +52,5 @@ export class User {
     @JoinTable({
         name: 'user_roles'
     })
-    roles:Role[];
+    roles: Role[];
 }

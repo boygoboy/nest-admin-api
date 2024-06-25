@@ -1,88 +1,88 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn,UpdateDateColumn,Tree, TreeChildren, TreeParent} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Tree, TreeChildren, TreeParent } from 'typeorm';
 enum MenuType {
     Primary = 1,
     Secondary = 2
 }
 @Entity({
-    name:'menus'
+    name: 'menus'
 })
 @Tree('closure-table')
 export class Menu {
     @PrimaryGeneratedColumn()
     id: number;
     @Column({
-        type:'varchar',
-        length:50,
-        comment:'权限标识'
+        type: 'varchar',
+        length: 50,
+        comment: '权限标识'
     })
-    code:string;
+    code: string;
     @Column({
-        type:'varchar',
-        length:50,
+        type: 'varchar',
+        length: 50,
         nullable: true,  // 确保这里设置为 true
-        comment:'菜单名称'
+        comment: '菜单名称'
     })
-    name:string;
+    name: string;
     @Column({
-        type:'varchar',
-        length:50,
+        type: 'varchar',
+        length: 50,
         nullable: true,  // 确保这里设置为 true
-        comment:'菜单组件'
+        comment: '菜单组件'
     })
-    component:string;
+    component: string;
     @Column({
-        type:'varchar',
+        type: 'varchar',
         nullable: true,  // 确保这里设置为 true
-        comment:'菜单父级ID'
+        comment: '菜单父级ID'
     })
-    parentId: number| null;
+    parentId: number | null;
     @Column({
-        type:'varchar',
-        length:50,
-        comment:'菜单路径'
+        type: 'varchar',
+        length: 50,
+        comment: '菜单路径'
     })
-    path:string;
+    path: string;
     @Column({
-        type:'varchar',
-        length:50,
+        type: 'varchar',
+        length: 50,
         nullable: true,  // 确保这里设置为 true
-        comment:'菜单重定向'
+        comment: '菜单重定向'
     })
-    redirect:string;
+    redirect: string;
     @Column({
-        type:'int',
-        comment:'菜单排序'
+        type: 'int',
+        comment: '菜单排序'
     })
-    sort:number;
+    sort: number;
     @Column({
         type: 'enum',
         enum: MenuType,
         default: MenuType.Primary,
         comment: '菜单类型'
     })
-    type:MenuType;
-  @CreateDateColumn()
-    createTime:Date;
-  @UpdateDateColumn()
-    updateTime:Date;
+    type: MenuType;
+    @CreateDateColumn()
+    createTime: Date;
+    @UpdateDateColumn()
+    updateTime: Date;
     @Column({
-        type:'varchar',
-        length:255,
-        comment:'菜单备注'
+        type: 'varchar',
+        length: 255,
+        comment: '菜单备注'
     })
-    remark:string;
+    remark: string;
     @TreeChildren({ cascade: ['remove'] })
-    children:Menu[];
-    @TreeParent({onDelete: 'CASCADE'})
+    children: Menu[];
+    @TreeParent({ onDelete: 'CASCADE' })
     parent: Menu;
     @Column({
-        type:'boolean',
-        comment:'是否是外链'
+        type: 'boolean',
+        comment: '是否是外链'
     })
-    isLink:boolean;
+    isLink: boolean;
     @Column({
-        type:'json',
-        comment:'菜单元信息'
+        type: 'json',
+        comment: '菜单元信息'
     })
     meta: {
         cache: boolean;
@@ -91,6 +91,6 @@ export class Menu {
         isBreadcrumd?: boolean;
         linkTo?: string;
         title: string;
-     }
+    }
 }
 

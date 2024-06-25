@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn,CreateDateColumn,UpdateDateColumn, ManyToMany ,JoinTable} from 'typeorm';
-import { Menu } from '@/menu/entities/menu.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Menu } from '../../menu/entities/menu.entity';
 @Entity({
-    name:'roles'
+    name: 'roles'
 })
 export class Role {
     @PrimaryGeneratedColumn()
@@ -23,7 +23,7 @@ export class Role {
         comment: '角色状态',
         default: false
     })
-    status:boolean;
+    status: boolean;
     @Column({
         type: 'varchar',
         comment: '备注',

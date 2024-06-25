@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-import {TypeOrmModule} from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { MenuService } from './menu.service';
 import { MenuController } from './menu.controller';
-import { Menu } from '@/menu/entities/menu.entity';
-import { User } from '@/user/entities/user.entity';
-import { Role } from '@/role/entities/role.entity';
+import { Menu } from '../menu/entities/menu.entity';
+import { User } from '../user/entities/user.entity';
+import { Role } from '../role/entities/role.entity';
 
 @Module({
-  imports:[
-    TypeOrmModule.forFeature([Menu,User,Role])
+  imports: [
+    TypeOrmModule.forFeature([Menu, User, Role])
   ],
   controllers: [MenuController],
   providers: [MenuService],
 })
-export class MenuModule {}
+export class MenuModule { }
