@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import {APP_GUARD} from '@nestjs/core'
+import { APP_GUARD } from '@nestjs/core'
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,7 +14,8 @@ import { Role } from './role/entities/role.entity';
 import { User } from './user/entities/user.entity';
 import { RedisModule } from './redis/redis.module';
 import { AuthModule } from './auth/auth.module';
-import {LoginGuard} from '@/auth/login.guard'
+import { LoginGuard } from '@/auth/login.guard'
+import { PermissionGuard } from '@/auth/permission.guard'
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -64,7 +65,11 @@ import {LoginGuard} from '@/auth/login.guard'
     {
       provide: APP_GUARD,
       useClass: LoginGuard
+    },
+    {
+      provide: 'APP_GUARD',
+      useClass: PermissionGuard
     }
   ],
 })
-export class AppModule {}
+export class AppModule { }

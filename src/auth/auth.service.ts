@@ -11,6 +11,7 @@ import { LoginVo } from './vo/login.vo';
 import { md5 } from '@/utils'
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '@/redis/redis.service'
+import { AuthUser } from '@/auth/types/index'
 
 @Injectable()
 export class AuthService {
@@ -38,7 +39,7 @@ export class AuthService {
       where: {
         username: logindata.username,
       },
-      relations: ['roles']
+      relations: ['roles', 'roles.menus']
     });
     if (!user) {
       throw new HttpException('用户名或者密码错误', HttpStatus.BAD_REQUEST)
@@ -50,6 +51,8 @@ export class AuthService {
       throw new HttpException('账号已被禁用', HttpStatus.BAD_REQUEST)
     }
 
+    const permissions = [...new Set(user.roles.map(role => role.menus).flat())].filter(menu => menu.type === 2).map(menu => menu.code) as string[]
+    (user as AuthUser).permissions = permissions
     const vo = new LoginVo();
     vo.access_token = this.jwtService.sign({ ...user }, {
       expiresIn: this.configService.get('jwt.expireIn') || '30m'
