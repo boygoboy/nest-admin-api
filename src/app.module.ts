@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core'
+import { APP_GUARD, APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,7 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
-import { getConfig } from './config';
+import { getConfig, IS_DEV } from './config';
 import { Menu } from './menu/entities/menu.entity';
 import { Role } from './role/entities/role.entity';
 import { User } from './user/entities/user.entity';
@@ -16,6 +16,12 @@ import { RedisModule } from './redis/redis.module';
 import { AuthModule } from './auth/auth.module';
 import { LoginGuard } from '@/auth/login.guard'
 import { PermissionGuard } from '@/auth/permission.guard'
+import { WinstonModule } from "nest-winston";
+import type { WinstonModuleOptions } from "nest-winston";
+import { transports, format } from "winston";
+import "winston-daily-rotate-file";
+import { CustomExceptionFilter } from '@/filter/custom-exception.filter';
+import { InvokeRecordInterceptor } from '@/interceptor/invoke-record.interceptor';
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -34,6 +40,45 @@ import { PermissionGuard } from '@/auth/permission.guard'
       ignoreEnvFile: false,
       isGlobal: true,
       load: [getConfig],
+    }),
+    WinstonModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        // 日志输出的管道
+        const transportsList: WinstonModuleOptions["transports"] = [
+          new transports.DailyRotateFile({
+            level: "error",
+            dirname: `logs`,
+            filename: `%DATE%-error.log`,
+            datePattern: "YYYY-MM-DD",
+            maxSize: "20m",
+            maxFiles: "14d"
+          }),
+          new transports.DailyRotateFile({
+            dirname: `logs`,
+            filename: `%DATE%-combined.log`,
+            datePattern: "YYYY-MM-DD",
+            maxSize: "20m",
+            maxFiles: "7d",
+            format: format.combine(
+              format((info) => {
+                if (info.level === "error") {
+                  return false; // 过滤掉'error'级别的日志
+                }
+                return info;
+              })()
+            )
+          })
+        ];
+        // 开发环境下，输出到控制台
+        if (IS_DEV) {
+          transportsList.push(new transports.Console());
+        }
+
+        return {
+          transports: transportsList
+        };
+      }
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -69,6 +114,14 @@ import { PermissionGuard } from '@/auth/permission.guard'
     {
       provide: 'APP_GUARD',
       useClass: PermissionGuard
+    },
+    {
+      provide: APP_FILTER,
+      useClass: CustomExceptionFilter
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: InvokeRecordInterceptor
     }
   ],
 })

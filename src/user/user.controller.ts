@@ -51,6 +51,7 @@ export class UserController {
   }
 
   @Get('/list')
+  @RequirePermission('require:login')
   findAll() {
     return this.userService.findAll()
   }

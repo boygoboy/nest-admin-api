@@ -48,6 +48,7 @@ export class RoleController {
   }
 
   @Get('/list')
+  @RequirePermission('require:login')
   findAll() {
     return this.roleService.findAll()
   }

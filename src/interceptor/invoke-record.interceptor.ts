@@ -1,12 +1,14 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor,Logger } from '@nestjs/common';
-import { Observable ,tap} from 'rxjs';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor, Inject } from '@nestjs/common';
+import { Observable, tap } from 'rxjs';
 import { Response } from 'express';
 import { Request } from 'express';
+import { WINSTON_MODULE_PROVIDER } from "nest-winston";
+import { Logger } from "winston";
 
 @Injectable()
 export class InvokeRecordInterceptor implements NestInterceptor {
-  private readonly logger = new Logger(InvokeRecordInterceptor.name);
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> | Promise<Observable<any>>{
+  constructor(@Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger) { }
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> | Promise<Observable<any>> {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
 
@@ -14,24 +16,22 @@ export class InvokeRecordInterceptor implements NestInterceptor {
 
     const { ip, method, path } = request;
 
-    this.logger.debug(
-      `${method} ${path} ${ip} ${userAgent}: ${
-        context.getClass().name
-      } ${
-        context.getHandler().name
+    this.logger.info(
+      `${method} ${path} ${ip} ${userAgent}: ${context.getClass().name
+      } ${context.getHandler().name
       } invoked...`,
     );
-  
-    this.logger.debug(`user: ${request.user?.userId}, ${request.user?.username}`);
+
+    this.logger.info(`user: ${request.user?.userId}, ${request.user?.username}`);
 
     const now = Date.now();
 
     return next.handle().pipe(
       tap((res) => {
-        this.logger.debug(
+        this.logger.info(
           `${method} ${path} ${ip} ${userAgent}: ${response.statusCode}: ${Date.now() - now}ms`,
         );
-        this.logger.debug(`Response: ${JSON.stringify(res)}`);
+        this.logger.info(`Response: ${JSON.stringify(res)}`);
       }),
     );
 

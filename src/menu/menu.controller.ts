@@ -37,11 +37,13 @@ export class MenuController {
   }
 
   @Get('/select')
+  @RequirePermission('require:login')
   findAll() {
     return this.menuService.findAll();
   }
 
   @Get('/user')
+  @RequirePermission('require:login')
   findUserMenu(@UserInfo('id') id: number) {
     return this.menuService.findUserMenu(id);
   }

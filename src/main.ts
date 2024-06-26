@@ -1,13 +1,14 @@
 import { NestFactory } from '@nestjs/core';
-import {  BadRequestException,
+import {
+  BadRequestException,
   HttpStatus,
-  ValidationPipe} from '@nestjs/common';
+  ValidationPipe
+} from '@nestjs/common';
 import { AppModule } from './app.module';
-import {getConfig} from './config';
-import {FormatResponseInterceptor} from '@/interceptor/format-response.interceptor';
-import {InvokeRecordInterceptor} from '@/interceptor/invoke-record.interceptor';
-import {CustomExceptionFilter} from '@/filter/custom-exception.filter';
-const config=getConfig();
+import { getConfig } from './config';
+import { FormatResponseInterceptor } from '@/interceptor/format-response.interceptor';
+
+const config = getConfig();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -33,9 +34,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new FormatResponseInterceptor());
-  app.useGlobalInterceptors(new InvokeRecordInterceptor());
-  app.useGlobalFilters(new CustomExceptionFilter());
 
-  await app.listen(config?.server?.port??3000);
+  await app.listen(config?.server?.port ?? 3000);
 }
 bootstrap();
