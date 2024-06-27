@@ -20,10 +20,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node ./node_modules/typeorm/cli",
     "migration:create": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:create",
-    "migration:generate": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:generate -d ./src/data-source.ts",
-    "migration:run:dev": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:run -d ./src/data-source.ts",
-    "migration:run:prod": "cross-env RUNNING_ENV=prod npm run typeorm -- migration:run -d ./src/data-source.ts",
-    "migration:revert": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:revert -d ./src/data-source.ts"
+    "migration:generate": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:generate -d ./src/migration/data-source.ts",
+    "migration:run:dev": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:run -d ./src/migration/data-source.ts",
+    "migration:run:prod": "cross-env RUNNING_ENV=prod npm run typeorm -- migration:run -d ./src/migration/data-source.ts",
+    "migration:revert": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:revert -d ./src/migration/data-source.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
