@@ -3,15 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken'; // 确保导入TokenExpiredError
-import { User } from '@/user/entities/user.entity';
-import { Role } from '@/role/entities/role.entity';
-import { Menu } from '@/menu/entities/menu.entity';
+import { User } from '@/api/system/user/entities/user.entity';
+import { Role } from '@/api/system/role/entities/role.entity';
+import { Menu } from '@/api/system/menu/entities/menu.entity';
 import { LoginDto } from './dto/login.dto';
 import { LoginVo } from './vo/login.vo';
 import { md5 } from '@/utils'
 import { ConfigService } from '@nestjs/config';
-import { RedisService } from '@/redis/redis.service'
-import { AuthUser } from '@/auth/types/index'
+import { RedisService } from '@/common/redis/redis.service'
+import { AuthUser } from '@/api/auth/types/index'
 
 @Injectable()
 export class AuthService {
@@ -53,7 +53,7 @@ export class AuthService {
 
     const permissions = [...new Set(user.roles.map(role => role.menus).flat())].filter(menu => menu.type === 2).map(menu => menu.code) as string[]
     (user as AuthUser).permissions = permissions
-    user.roles.forEach(role=>{
+    user.roles.forEach(role => {
       delete role.menus
     })
     const vo = new LoginVo();

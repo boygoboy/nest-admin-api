@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
-import { User } from "./user/entities/user.entity";
-import { Role } from "./role/entities/role.entity";
-import { Menu } from "./menu/entities/menu.entity";
+import { User } from "./api/system/user/entities/user.entity";
+import { Role } from "./api/system/role/entities/role.entity";
+import { Menu } from "./api/system/menu/entities/menu.entity";
 import { getConfig } from "./config";
 const appConfig = getConfig()
 

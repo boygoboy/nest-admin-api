@@ -1,9 +1,9 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository, Like } from 'typeorm';
-import { User } from '@/user/entities/user.entity';
-import { Role } from '@/role/entities/role.entity';
-import { Menu } from '@/menu/entities/menu.entity';
+import { User } from '@/api/system/user/entities/user.entity';
+import { Role } from '@/api/system/role/entities/role.entity';
+import { Menu } from '@/api/system/menu/entities/menu.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PasswordDto } from './dto/password.dto';
@@ -105,7 +105,7 @@ export class UserService {
       if (!user) {
         throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST)
       }
-      if (userId === id) {
+      if (userId === id && accountStatus === false) {
         throw new HttpException('不能禁用自己', HttpStatus.BAD_REQUEST)
       }
       user.accountStatus = accountStatus
@@ -124,6 +124,9 @@ export class UserService {
       const user = await this.userRepository.findOneBy({ id: id })
       if (!user) {
         throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST)
+      }
+      if (user.username == 'back_admin') {
+        throw new HttpException('超级管理员不能删除', HttpStatus.BAD_REQUEST)
       }
       await this.userRepository.remove(user)
       return '删除用户成功'

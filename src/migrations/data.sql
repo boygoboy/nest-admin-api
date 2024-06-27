@@ -18,6 +18,7 @@ INSERT INTO `menus` VALUES (17, 'system:user:add', '', '', 5, '', '', 2, '2', '2
 INSERT INTO `menus` VALUES (18, 'system:user:edit', '', '', 5, '', '', 3, '2', '2024-06-17 10:36:58.234694', '2024-06-17 10:36:58.234694', '响分少保成面', 0, '{\"icon\": \"\", \"cache\": false, \"title\": \"修改用户\", \"hidden\": false, \"linkTo\": \"\", \"isBreadcrumd\": false}');
 INSERT INTO `menus` VALUES (19, 'system:user:delete', '', '', 5, '', '', 4, '2', '2024-06-17 10:37:50.566721', '2024-06-17 10:37:50.566721', '入度风非', 0, '{\"icon\": \"\", \"cache\": false, \"title\": \"删除用户\", \"hidden\": false, \"linkTo\": \"\", \"isBreadcrumd\": false}');
 INSERT INTO `menus` VALUES (20, 'system:user:password', '', '', 5, '', '', 6, '2', '2024-06-17 10:38:26.983328', '2024-06-17 10:38:26.983328', '收速化组个后', 0, '{\"icon\": \"\", \"cache\": false, \"title\": \"密码重置\", \"hidden\": false, \"linkTo\": \"\", \"isBreadcrumd\": false}');
+
 INSERT INTO `menus_closure` VALUES (1, 1);
 INSERT INTO `menus_closure` VALUES (2, 2);
 INSERT INTO `menus_closure` VALUES (2, 3);
@@ -71,6 +72,7 @@ INSERT INTO `menus_closure` VALUES (17, 17);
 INSERT INTO `menus_closure` VALUES (18, 18);
 INSERT INTO `menus_closure` VALUES (19, 19);
 INSERT INTO `menus_closure` VALUES (20, 20);
+
 INSERT INTO `roles` VALUES (1, 'admin1', '管理员1', 1, '特发', '2024-06-17 12:59:44.053251', '2024-06-21 14:32:01.610539');
 INSERT INTO `roles` VALUES (3, 'admin2', '管理员2', 1, '特发', '2024-06-17 13:01:49.055558', '2024-06-21 17:13:49.000000');
 INSERT INTO `roles` VALUES (4, 'admin3', '管理员3', 1, '特发', '2024-06-17 13:02:36.561582', '2024-06-17 13:02:36.561582');
@@ -82,6 +84,7 @@ INSERT INTO `roles` VALUES (10, 'admin9', '管理员9', 1, '特发', '2024-06-17
 INSERT INTO `roles` VALUES (11, 'admin10', '管理员10', 1, '特发', '2024-06-17 13:48:08.678719', '2024-06-17 13:48:08.678719');
 INSERT INTO `roles` VALUES (12, 'admin11', '管理员11', 1, '特发', '2024-06-17 13:48:15.716660', '2024-06-17 13:48:15.716660');
 INSERT INTO `roles` VALUES (13, 'admin12', '管理员12', 1, '特发', '2024-06-17 13:48:34.409991', '2024-06-17 13:48:34.409991');
+
 INSERT INTO `role_menu` VALUES (1, 1);
 INSERT INTO `role_menu` VALUES (1, 2);
 INSERT INTO `role_menu` VALUES (1, 3);
@@ -106,9 +109,11 @@ INSERT INTO `role_menu` VALUES (3, 1);
 INSERT INTO `role_menu` VALUES (3, 2);
 INSERT INTO `role_menu` VALUES (3, 3);
 INSERT INTO `role_menu` VALUES (3, 6);
+
 INSERT INTO `users` VALUES (1, 'back_admin', '白菜', 1,'e10adc3949ba59abbe56e057f20f883e', 'cwj16030301@gmail.com', '15261149203', '全权限用户', '2024-06-04 00:00:00.000000', '2024-06-21 16:25:20.000000');
 INSERT INTO `users` VALUES (5, 'goudan', '狗蛋', 1,  'c33367701511b4f6020ec61ded352059','goudan2020@gmail.com', '15261124022', '测试用户', '2024-06-21 16:40:46.286918', '2024-06-21 16:43:04.000000');
 INSERT INTO `users` VALUES (6, 'test_user', '测试用户', 1, 'e10adc3949ba59abbe56e057f20f883e','test@qq.com', '15246510230', 'test1', '2024-06-21 16:49:30.169631', '2024-06-25 08:58:38.000000');
+
 INSERT INTO `user_roles` VALUES (1, 1);
 INSERT INTO `user_roles` VALUES (5, 1);
 INSERT INTO `user_roles` VALUES (5, 3);

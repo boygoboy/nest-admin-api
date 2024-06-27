@@ -16,7 +16,7 @@ mysql:
   password: 'baicai666666'
   database: 'admin_api'
   dialect: 'mysql'
-  synchronize: true
+  synchronize: false
   autoLoadModels: true
   # 打印数据库日志（sequelize）
   logging: true

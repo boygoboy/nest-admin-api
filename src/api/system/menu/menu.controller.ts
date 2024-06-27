@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query, Req } from '@nestjs/common';
-import { ParseIntPipe } from '@/pipe'
-import { RequireLogin, UserInfo } from '@/custom.decorator';
+import { ParseIntPipe } from '@/common/pipe'
+import { RequireLogin, UserInfo } from '@/common/decorators/custom.decorator';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
-import { RequirePermission } from '@/custom.decorator'
+import { RequirePermission } from '@/common/decorators/custom.decorator'
 
 @Controller('/system/menu')
 @RequirePermission('system:menu:search')

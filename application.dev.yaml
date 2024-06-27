@@ -2,7 +2,7 @@
 server:
   host: 'localhost'
   port: 3001
-  prefix: '/'
+  prefix: '/api'
 # JWTModule相关配置
 jwt:
   secret: 'baicai'
@@ -14,9 +14,9 @@ mysql:
   port: 3306
   username: 'root'
   password: 'baicai666666'
-  database: 'admin_api'
+  database: 'test'
   dialect: 'mysql'
-  synchronize: true
+  synchronize: false
   autoLoadModels: true
   # 打印数据库日志（sequelize）
   logging: true

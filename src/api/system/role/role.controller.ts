@@ -1,11 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ParseIntPipe, Query, Req } from '@nestjs/common';
-import { RequireLogin } from '@/custom.decorator';
+import { RequireLogin } from '@/common/decorators/custom.decorator';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PermissionDto } from './dto/permission.dto'
 import { QueryDto } from './dto/query-dto';
-import { RequirePermission } from '@/custom.decorator';
+import { StatusDto } from './dto/status.dto';
+import { Role } from './entities/role.entity';
+import { RequirePermission, UserInfo } from '@/common/decorators/custom.decorator';
 
 @Controller('/system/role')
 @RequirePermission('system:role:search')
@@ -23,6 +25,12 @@ export class RoleController {
   @RequirePermission('system:role:edit')
   update(@Body() updateRoleDto: UpdateRoleDto) {
     return this.roleService.update(updateRoleDto);
+  }
+
+  @Put('/status')
+  @RequirePermission('system:role:edit')
+  updateStatus(@UserInfo('roles') roles: Role[], @Body() statusDto: StatusDto) {
+    return this.roleService.updateStatus(roles, statusDto);
   }
 
   @Post('/:id/menu/ids')

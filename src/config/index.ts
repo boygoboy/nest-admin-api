@@ -9,12 +9,12 @@ export const getEnv = (): string => {
 };
 export const IS_DEV = getEnv() === 'dev';
 // 读取项目配置
-export  function getConfig(): AppConfig {
+export function getConfig(): AppConfig {
   const environment = getEnv();
-  const configFilePath = join(process.cwd(), `./application.${environment}.yaml`);
-  const file =  fs.readFileSync(configFilePath, {
+  const configFilePath = join(process.cwd(), environment ? `./application.${environment}.yaml` : './application.yaml');
+  const file = fs.readFileSync(configFilePath, {
     encoding: 'utf-8'
-});
- const config: AppConfig = yaml.load(file);
+  });
+  const config: AppConfig = yaml.load(file);
   return config
 }

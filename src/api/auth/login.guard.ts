@@ -1,10 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable,Inject,UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-import {RedisService} from '@/redis/redis.service';
-import {User} from '@/user/entities/user.entity';
+import { RedisService } from '@/common/redis/redis.service';
+import { User } from '@/api/system/user/entities/user.entity';
 import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 
@@ -28,42 +28,42 @@ export class LoginGuard implements CanActivate {
   @InjectEntityManager()
   private entityManager: EntityManager;
 
-   async canActivate(
+  async canActivate(
     context: ExecutionContext,
-  ):  Promise<boolean>{
-    const request:Request = context.switchToHttp().getRequest();
+  ): Promise<boolean> {
+    const request: Request = context.switchToHttp().getRequest();
     const requireLogin = this.reflector.getAllAndOverride('require-login', [
       context.getClass(),
       context.getHandler()
     ]);
-    if(!requireLogin){
+    if (!requireLogin) {
       return true;
     }
     const authorization = request.headers.authorization;
-    if(!authorization){
+    if (!authorization) {
       throw new UnauthorizedException('未登录');
     }
     const token = authorization.split(' ')[1];
-    const access_token_sessionid=token.slice(-10)
-    const redisToken= this.redisService.getToken(`accessToken:${access_token_sessionid}`)
-    if(!redisToken){
+    const access_token_sessionid = token.slice(-10)
+    const redisToken = this.redisService.getToken(`accessToken:${access_token_sessionid}`)
+    if (!redisToken) {
       throw new UnauthorizedException('未登录');
     }
-    let isDisabled=false
-    try{
-      const data= this.jwtService.verify(token);
+    let isDisabled = false
+    try {
+      const data = this.jwtService.verify(token);
       const user = await this.entityManager.findOneBy(User, { id: data.id });
-      if(!user){
+      if (!user) {
         throw new UnauthorizedException('未登录');
       }
-      if(user.accountStatus===false){
-        isDisabled=true
+      if (user.accountStatus === false) {
+        isDisabled = true
         throw new Error('用户被禁用')
       }
-      request.user=data
+      request.user = data
       return true;
-    }catch(error){
-      if(isDisabled){
+    } catch (error) {
+      if (isDisabled) {
         throw new UnauthorizedException('用户被禁用');
       }
       throw new UnauthorizedException('未登录');

@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query, Headers } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { RequireLogin } from '@/custom.decorator';
+import { RequireLogin } from '@/common/decorators/custom.decorator';
 
 @Controller('auth')
 export class AuthController {

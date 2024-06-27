@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
-import { ParseIntPipe } from '@/pipe'
+import { ParseIntPipe } from '@/common/pipe'
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PasswordDto } from './dto/password.dto';
-import { RequireLogin } from '@/custom.decorator';
+import { RequireLogin } from '@/common/decorators/custom.decorator';
 import { StatusDto } from './dto/status.dto';
 import { QueryDto } from './dto/query.dto';
-import { UserInfo } from '@/custom.decorator';
-import { RequirePermission } from '@/custom.decorator'
+import { UserInfo } from '@/common/decorators/custom.decorator';
+import { RequirePermission } from '@/common/decorators/custom.decorator'
 @Controller('/system/user')
 @RequirePermission('system:user:search')
 @RequireLogin()

@@ -5,23 +5,23 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { UserModule } from './user/user.module';
-import { RoleModule } from './role/role.module';
-import { MenuModule } from './menu/menu.module';
+import { UserModule } from './api/system/user/user.module';
+import { RoleModule } from './api/system/role/role.module';
+import { MenuModule } from './api/system/menu/menu.module';
 import { getConfig, IS_DEV } from './config';
-import { Menu } from './menu/entities/menu.entity';
-import { Role } from './role/entities/role.entity';
-import { User } from './user/entities/user.entity';
-import { RedisModule } from './redis/redis.module';
-import { AuthModule } from './auth/auth.module';
-import { LoginGuard } from '@/auth/login.guard'
-import { PermissionGuard } from '@/auth/permission.guard'
+import { Menu } from './api/system/menu/entities/menu.entity';
+import { Role } from './api/system/role/entities/role.entity';
+import { User } from './api/system/user/entities/user.entity';
+import { RedisModule } from './common/redis/redis.module';
+import { AuthModule } from './api/auth/auth.module';
+import { LoginGuard } from '@/api/auth/login.guard'
+import { PermissionGuard } from '@/api/auth/permission.guard'
 import { WinstonModule } from "nest-winston";
 import type { WinstonModuleOptions } from "nest-winston";
 import { transports, format } from "winston";
 import "winston-daily-rotate-file";
-import { CustomExceptionFilter } from '@/filter/custom-exception.filter';
-import { InvokeRecordInterceptor } from '@/interceptor/invoke-record.interceptor';
+import { CustomExceptionFilter } from '@/common/filter/custom-exception.filter';
+import { InvokeRecordInterceptor } from '@/common/interceptor/invoke-record.interceptor';
 @Module({
   imports: [
     JwtModule.registerAsync({

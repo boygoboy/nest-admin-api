@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { getConfig } from './config';
-import { FormatResponseInterceptor } from '@/interceptor/format-response.interceptor';
+import { FormatResponseInterceptor } from '@/common/interceptor/format-response.interceptor';
 
 const config = getConfig();
 
