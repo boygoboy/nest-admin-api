@@ -10,11 +10,11 @@ jwt:
   refreshExpire: '30d' #表示刷新token的过期时间30天
 # sequelize相关
 mysql:
-  host: 'localhost'
+  host: 'mysql-container'
   port: 3306
   username: 'root'
   password: 'baicai666666'
-  database: 'test'
+  database: 'nest_admin_api'
   dialect: 'mysql'
   synchronize: false
   autoLoadModels: true
@@ -24,7 +24,7 @@ mysql:
   poolSize: 20
 redis:
   enable: false #true/false 表示是否启用redis
-  host: 'localhost'
+  host: 'redis-container'
   port: 6379
   enableAuth: false
   db: 0
