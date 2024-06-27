@@ -14,7 +14,7 @@ mysql:
   port: 3306
   username: 'root'
   password: 'baicai666666'
-  database: 'admin_api'
+  database: 'test'
   dialect: 'mysql'
   synchronize: false
   autoLoadModels: true

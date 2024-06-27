@@ -125,4 +125,6 @@ import { InvokeRecordInterceptor } from '@/common/interceptor/invoke-record.inte
     }
   ],
 })
-export class AppModule { }
+export class AppModule {
+
+}
