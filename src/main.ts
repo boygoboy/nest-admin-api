@@ -34,7 +34,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new FormatResponseInterceptor());
-
+  app.enableCors();
   await app.listen(config?.server?.port ?? 3000);
 }
 bootstrap();
