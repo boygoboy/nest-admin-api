@@ -1,5 +1,5 @@
 # 基础镜像：构建阶段
-FROM node:18.13-alpine3.14 as build-stage
+FROM node:18.20.3-alpine3.19 as build-stage
 
 # 设置工作目录
 WORKDIR /app
@@ -20,7 +20,7 @@ COPY . .
 RUN npm run build
 
 # 生产阶段
-FROM node:18.13-alpine3.14 as production-stage
+FROM node:18.20.3-alpine3.19 as production-stage
 
 # 从构建阶段复制构建好的文件到生产阶段
 COPY --from=build-stage /app/dist /app
