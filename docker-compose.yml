@@ -8,8 +8,8 @@ services:
       - mysql-container
       - redis-container
     ports:
-      - 3005:3001
-     volumes:
+      - '3005:3001'
+    volumes:
       - ./config/application.prod.yaml:/app/application.prod.yaml
     networks:
       - common-network
