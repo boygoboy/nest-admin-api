@@ -7,8 +7,6 @@ WORKDIR /app
 # 复制package.json和package-lock.json
 COPY package*.json ./
 
-# 设置npm镜像源以加速依赖安装
-RUN npm config set registry https://registry.npmmirror.com/
 
 # 安装依赖
 RUN npm install
@@ -32,8 +30,6 @@ COPY --from=build-stage /app/application.prod.yaml /app/application.prod.yaml
 # 设置工作目录
 WORKDIR /app
 
-# 设置npm镜像源
-RUN npm config set registry https://registry.npmmirror.com/
 
 # 仅安装生产依赖
 RUN npm install --production
