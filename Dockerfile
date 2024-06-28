@@ -27,10 +27,12 @@ COPY --from=build-stage /app/dist /app
 COPY --from=build-stage /app/package*.json /app/
 
 # 这里添加复制配置文件的步骤
-COPY --from=build-stage /app/application.prod.yaml /app/application.prod.yaml
+COPY --from=build-stage /app/application.prod.yaml /app/
+
 
 # 设置工作目录
 WORKDIR /app
+
 
 RUN npm config set registry https://registry.npmjs.org/
 
@@ -41,15 +43,19 @@ RUN npm install --production
 # 全局安装pm2
 RUN npm install -g pm2
 
-# 拷贝入口脚本
-COPY entrypoint.sh /entrypoint.sh
+RUN npm install -g cross-env
 
-# 赋予脚本执行权限
-RUN chmod +x /entrypoint.sh
+RUN apk add --no-cache netcat-openbsd
+
+
+
+
 
 # 设置容器对外暴露的端口
 EXPOSE 3001
 
 # 设置入口点和命令
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["pm2-runtime", "/app/src/main.js"]
+CMD sh -c 'while ! nc -z mysql-container 3306; do echo "Waiting for MySQL..."; sleep 1; done; npm run migration:run:prod && cross-env RUNNING_ENV=prod pm2-runtime /app/src/main.js'
+
+
+

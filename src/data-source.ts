@@ -2,7 +2,7 @@ import { DataSource } from "typeorm";
 import { User } from "./api/system/user/entities/user.entity";
 import { Role } from "./api/system/role/entities/role.entity";
 import { Menu } from "./api/system/menu/entities/menu.entity";
-import { getConfig } from "./config";
+import { getConfig, IS_DEV } from "./config";
 const appConfig = getConfig()
 
 export default new DataSource({
@@ -16,7 +16,7 @@ export default new DataSource({
     logging: appConfig.mysql.logging as boolean,
     entities: [User, Role, Menu],
     poolSize: appConfig.mysql.poolSize,
-    migrations: ['src/migrations/**.ts'],
+    migrations: [IS_DEV ? 'src/migrations/**.ts' : 'src/migrations/**.js'],
     connectorPackage: 'mysql2',
     extra: {
         authPlugin: 'sha256_password',

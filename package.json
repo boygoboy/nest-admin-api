@@ -22,7 +22,7 @@
     "migration:create": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:create",
     "migration:generate": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:generate -d ./src/data-source.ts",
     "migration:run:dev": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:run -d ./src/data-source.ts",
-    "migration:run:prod": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:run -d ./src/data-source.js",
+    "migration:run:prod": "cross-env RUNNING_ENV=prod npm run typeorm -- migration:run -d ./src/data-source.js",
     "migration:revert": "cross-env RUNNING_ENV=dev npm run typeorm -- migration:revert -d ./src/data-source.ts"
   },
   "dependencies": {
