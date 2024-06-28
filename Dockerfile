@@ -1,11 +1,13 @@
 # 基础镜像：构建阶段
-FROM node:18.0-alpine3.14 as build-stage
+FROM node:18.13-alpine3.14 as build-stage
 
 # 设置工作目录
 WORKDIR /app
 
 # 复制package.json和package-lock.json
 COPY package*.json ./
+
+RUN npm config set registry https://registry.npmjs.org/
 
 
 # 安装依赖
@@ -18,7 +20,7 @@ COPY . .
 RUN npm run build
 
 # 生产阶段
-FROM node:18.0-alpine3.14 as production-stage
+FROM node:18.13-alpine3.14 as production-stage
 
 # 从构建阶段复制构建好的文件到生产阶段
 COPY --from=build-stage /app/dist /app
@@ -29,6 +31,8 @@ COPY --from=build-stage /app/application.prod.yaml /app/application.prod.yaml
 
 # 设置工作目录
 WORKDIR /app
+
+RUN npm config set registry https://registry.npmjs.org/
 
 
 # 仅安装生产依赖
