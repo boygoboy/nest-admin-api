@@ -32,6 +32,10 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+        let isPass=await this.someExist(createUserDto.mobile, createUserDto.email, createUserDto.username)
+            if(isPass){
+                throw new HttpException('用户名、邮箱或者手机号已存在', HttpStatus.BAD_REQUEST)
+            }
       const user = new User();
       user.username = createUserDto.username
       user.nickName = createUserDto.nickName
@@ -57,6 +61,10 @@ export class UserService {
       if (!user) {
         throw new HttpException('用户不存在', HttpStatus.BAD_REQUEST)
       }
+      let isPass=await this.someExist(updateUserDto.mobile, updateUserDto.email, updateUserDto.username,updateUserDto.id)
+        if(isPass){
+            throw new HttpException('用户名、邮箱或者手机号已存在', HttpStatus.BAD_REQUEST)
+        }
       user.username = updateUserDto.username
       user.nickName = updateUserDto.nickName
       user.accountStatus = updateUserDto.accountStatus
@@ -168,6 +176,46 @@ export class UserService {
       users.forEach(item => delete item.password)
       return users
     } catch (error) {
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
+
+  async someExist(mobile: string, email: string, username: string,userId?:number) {
+    try {
+      const params = [mobile, email, username].filter(x => x !== undefined)
+      if (params.length !== 3) {
+        throw new HttpException('传参错误', HttpStatus.BAD_REQUEST)
+      }
+      const users = await this.userRepository
+      .createQueryBuilder("user")
+      .where("user.mobile = :mobile", { mobile })
+      .orWhere("user.email = :email", { email })
+      .orWhere("user.username = :username", { username })
+      .getMany();
+      if(userId!=undefined){
+        if(users.length==0){
+            return false
+        }else if(users.length==1){
+            const user=await this.userRepository.findOneBy({ id: userId })
+            if(user.id==users[0].id){
+                return false
+            }else{
+                return true
+            }
+        }else{
+            return true
+        }
+      }else{
+        if(users.length==0){
+            return false
+        }else{
+            return true
+        }
+      }
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error
+      }
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
