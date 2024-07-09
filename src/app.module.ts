@@ -22,6 +22,8 @@ import { transports, format } from "winston";
 import "winston-daily-rotate-file";
 import { CustomExceptionFilter } from '@/common/filter/custom-exception.filter';
 import { InvokeRecordInterceptor } from '@/common/interceptor/invoke-record.interceptor';
+import {SendWebsocketInterceptor} from '@/common/interceptor/send-websocket.interceptor';
+import { SystemMessageModule } from './ws/system-message/system-message.module';
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -104,6 +106,7 @@ import { InvokeRecordInterceptor } from '@/common/interceptor/invoke-record.inte
     MenuModule,
     RedisModule,
     AuthModule,
+    SystemMessageModule,
   ],
   controllers: [AppController],
   providers: [AppService,
@@ -122,6 +125,10 @@ import { InvokeRecordInterceptor } from '@/common/interceptor/invoke-record.inte
     {
       provide: APP_INTERCEPTOR,
       useClass: InvokeRecordInterceptor
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SendWebsocketInterceptor
     }
   ],
 })

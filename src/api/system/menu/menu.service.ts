@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, TreeRepository, Like } from 'typeorm';
+import { Repository, TreeRepository, In } from 'typeorm';
 import { Menu } from '@/api/system/menu/entities/menu.entity';
 import { User } from '@/api/system/user/entities/user.entity';
 import { Role } from '@/api/system/role/entities/role.entity';
@@ -85,6 +85,25 @@ export class MenuService {
       if (!menu) {
         throw new HttpException('菜单不存在', HttpStatus.BAD_REQUEST)
       }
+    // 查找该菜单与之关联的角色
+    const menus=await this.menuRepository.findDescendants(menu)
+    const menuIds=menus.map(menu=>Number(menu.id))
+    menuIds.push(Number(id))
+    const linkMenus = await this.menuRepository.find({
+        where: {
+          id:In(menuIds),
+        },
+        relations: ['roles',]
+      })
+        const roleIds = [...new Set(linkMenus.map(menu => menu.roles).flat().map(role => role.id))]
+      const roles = await this.roleRepository.find({
+        where: { id: In(roleIds) },
+        relations: ['menus']  // 确保 'menus' 是角色实体中定义关联菜单的属性名
+    });
+    roles.forEach(role=>{
+        role.menus = role.menus.filter(menu=>!menuIds.includes(menu.id))
+    })
+    await this.roleRepository.save(roles)
       await this.menuRepository.remove(menu)
       return '删除成功'
     } catch (error) {

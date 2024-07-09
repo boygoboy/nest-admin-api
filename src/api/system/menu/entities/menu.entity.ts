@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Tree, TreeChildren, TreeParent } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Tree, TreeChildren, TreeParent, ManyToMany } from 'typeorm';
+import { Role } from '@/api/system/role/entities/role.entity';
 enum MenuType {
     Primary = 1,
     Secondary = 2
@@ -68,7 +69,8 @@ export class Menu {
     @Column({
         type: 'varchar',
         length: 255,
-        comment: '菜单备注'
+        comment: '菜单备注',
+        default: ''
     })
     remark: string;
     @TreeChildren({ cascade: ['remove'] })
@@ -92,5 +94,7 @@ export class Menu {
         linkTo?: string;
         title: string;
     }
+    @ManyToMany(() => Role, role => role.menus)
+    roles: Role[];
 }
 

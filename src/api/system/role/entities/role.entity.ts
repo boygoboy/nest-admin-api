@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Menu } from '../../menu/entities/menu.entity';
+import { User } from '../../user/entities/user.entity';
 @Entity({
     name: 'roles'
 })
@@ -35,9 +36,12 @@ export class Role {
     createTime: Date;
     @UpdateDateColumn()
     updateTime: Date;
-    @ManyToMany(() => Menu)
+    @ManyToMany(() => Menu, menu => menu.roles)
     @JoinTable({
         name: 'role_menu',
     })
     menus: Menu[];
+    @ManyToMany(() => User, user => user.roles)
+    users: User[];
+    
 }

@@ -38,6 +38,7 @@ export class CreateMenuDto {
     sort:number;
     @IsString({message:'备注必须为字符串'})
     @MaxLength(255,{message:'备注长度不能超过255位'})
+    @IsOptional()
     remark:string;
     @IsBoolean({message:'是否是外链必须为布尔值'})
     isLink:boolean;

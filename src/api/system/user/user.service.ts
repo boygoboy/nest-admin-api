@@ -136,6 +136,9 @@ export class UserService {
       if (user.username == 'back_admin') {
         throw new HttpException('超级管理员不能删除', HttpStatus.BAD_REQUEST)
       }
+      if(user.accountStatus){
+        throw new HttpException('用户未禁用，不能删除', HttpStatus.BAD_REQUEST)
+      }
       await this.userRepository.remove(user)
       return '删除用户成功'
     } catch (error) {

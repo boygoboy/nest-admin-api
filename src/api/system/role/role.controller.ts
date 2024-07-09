@@ -7,7 +7,7 @@ import { PermissionDto } from './dto/permission.dto'
 import { QueryDto } from './dto/query-dto';
 import { StatusDto } from './dto/status.dto';
 import { Role } from './entities/role.entity';
-import { RequirePermission, UserInfo } from '@/common/decorators/custom.decorator';
+import { RequirePermission, UserInfo,RequireSendWs } from '@/common/decorators/custom.decorator';
 
 @Controller('/system/role')
 @RequirePermission('system:role:search')
@@ -22,6 +22,7 @@ export class RoleController {
   }
 
   @Put()
+  @RequireSendWs('role-update')
   @RequirePermission('system:role:edit')
   update(@Body() updateRoleDto: UpdateRoleDto) {
     return this.roleService.update(updateRoleDto);
@@ -33,7 +34,7 @@ export class RoleController {
     return this.roleService.updateStatus(roles, statusDto);
   }
 
-  @Post('/:id/menu/ids')
+  @Put('/:id/menu/ids')
   @RequirePermission('system:role:menu')
   distrubtePermission(@Param('id', ParseIntPipe) id: number, @Body() permissionDto: PermissionDto) {
     return this.roleService.distrubtePermission(id, permissionDto)
