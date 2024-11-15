@@ -12,6 +12,7 @@ import { getConfig, IS_DEV } from './config';
 import { Menu } from './api/system/menu/entities/menu.entity';
 import { Role } from './api/system/role/entities/role.entity';
 import { User } from './api/system/user/entities/user.entity';
+import { EmailConfig } from './api/message/email-config/entities/email-config.entity';
 import { RedisModule } from './common/redis/redis.module';
 import { AuthModule } from './api/auth/auth.module';
 import { LoginGuard } from '@/api/auth/login.guard'
@@ -93,7 +94,7 @@ import { SystemMessageModule } from './ws/system-message/system-message.module';
         database: configService.get<string>('mysql.database'),
         synchronize: configService.get<boolean>('mysql.synchronize'),
         logging: configService.get<boolean>('mysql.logging'),
-        entities: [User, Role, Menu],
+        entities: [User, Role, Menu,EmailConfig],
         poolSize: configService.get<number>('mysql.poolSize'),
         connectorPackage: 'mysql2',
         extra: {

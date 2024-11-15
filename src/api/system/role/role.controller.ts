@@ -1,5 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, ParseIntPipe, Query, Req } from '@nestjs/common';
-import { RequireLogin } from '@/common/decorators/custom.decorator';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, Query } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -7,7 +6,7 @@ import { PermissionDto } from './dto/permission.dto'
 import { QueryDto } from './dto/query-dto';
 import { StatusDto } from './dto/status.dto';
 import { Role } from './entities/role.entity';
-import { RequirePermission, UserInfo,RequireSendWs } from '@/common/decorators/custom.decorator';
+import {RequireLogin, RequirePermission, UserInfo,RequireSendWs } from '@/common/decorators/custom.decorator';
 
 @Controller('/system/role')
 @RequirePermission('system:role:search')
